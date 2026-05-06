@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thar Roxx — Secure Booking System</title>
+<style>
+:root{
+  --primary:#1466f2;
+  --card-bg:rgba(255,255,255,0.92);
+  --text:#000;
+  font-family:Inter,system-ui,sans-serif;
+}
+html,body{
+  margin:0;
+  padding:0;
+  height:100%;
+}
+body{
+  margin:0;
+  padding:0;
+  min-height:100vh;
+
+ background: url("https://i.postimg.cc/zfbbQqRT/bg.jpg") no-repeat center center fixed !important;
+  background-size: cover !important;
+}
+.header{
+  position:fixed;
+  top:10px;
+  left:10px;
+  z-index:9999;
+}
+.header h1,
+#clock,
+.header .meta{
+  color:#fff;
+  text-shadow:
+    0 0 5px #fff,
+    0 0 10px #ffd700,
+    0 0 20px #ffcc00,
+    0 0 30px #ffaa00;
+}
+.header h1{margin:0;font-size:28px;color:#fff;}
+#clock{margin-top:6px;font-size:12px;font-weight:700;color:#fff;}
+.header .meta{margin-top:6px;font-size:13px;color:#fff;opacity:.95;}
+.sidebar{
+  position:fixed;
+  bottom:20px;
+  left:10px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.sidebar button{width:160px;padding:10px;border:none;border-radius:90px;background:var(--primary);color:#fff;font-weight:700;cursor:pointer;}
+.sidebar button:hover{background:#0f4acb;}
+.page{
+  position:fixed;
+  inset:0;
+
+  background: rgba(0,0,0,0.02);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  display:none;
+  padding:70px 15px;
+  overflow:auto;
+  z-index:500;
+}
+.form-card{
+  background: rgba(255,255,255,0.005);
+
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+
+  border:1px solid rgba(255,255,255,0.25);
+
+  color:#fff;
+  padding:18px;
+  border-radius:18px;
+
+  max-width:700px;
+  margin:auto;
+
+  box-shadow:
+    0 8px 25px rgba(0,0,0,0.5),
+    inset 0 0 15px rgba(255,255,255,0.08);
+}
+label{display:block;margin-top:12px;font-weight:700;font-size:14px;}
+
+input,select,textarea{
+  width:100%;
+  padding:10px;
+  margin-top:6px;
+
+  background: rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.3);
+  border-radius:8px;
+
+  color:#fff;
+}
+
+input::placeholder,
+textarea::placeholder{
+  color:#ddd;
+}
+.btn-primary{background:var(--primary);color:#fff;border:none;padding:10px 14px;border-radius:8px;margin-top:12px;cursor:pointer;}
+.btn-danger{background:#ef4444;color:#fff;border:none;padding:10px 14px;border-radius:8px;margin-top:12px;cursor:pointer;}
+.back-btn{
+  position:relative;
+  z-index:99999;
+  margin-bottom:14px;
+  background:#444;
+  color:#fff;
+  padding:8px 12px;
+  border-radius:8px;
+  border:none;
+  cursor:pointer;
+  display:inline-block;
+}
+.table-container{max-height:50vh;overflow:auto;margin-top:10px;border-radius:8px;}
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:900px;
+  color:#fff;
+}
+
+th,td{
+  padding:8px;
+  text-align:center;
+}
+
+th{
+  background: rgba(20,102,242,0.8);
+  color:#fff;
+}
+
+td{
+  background: rgba(255,255,255,0.1);
+  color:#fff;
+}
+
+#commissionTable .btn-primary{
+  background:#1466f2;
+  color:#fff;
+  border:none;
+  padding:6px 12px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+@media(max-width:768px){
+  .sidebar{
+    top:350px;
+    left:10px;
+  }
+
+  table{
+    font-size:13px;
+  }
+}.agent-fields{display:none;margin-top:10px;}
+ 
+
+.header h1,
+#clock,
+.header .meta{
+  color:#fff;
+  text-shadow:
+    0 0 5px #fff,
+    0 0 10px #ffd700,
+    0 0 20px #ffcc00,
+    0 0 30px #ffaa00;
+}
+.header h1{margin:0;font-size:28px;color:#fff;}
+#clock{margin-top:6px;font-size:12px;font-weight:700;color:#fff;}
+.header .meta{margin-top:6px;font-size:13px;color:#fff;opacity:.95;}
+/* SIDEBAR */
+
+.sidebar{
+  position:fixed;
+  bottom:20px;
+  left:12px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  z-index:9999;
+}
+
+/* IMAGE STYLE BUTTON */
+.sidebar button{
+  width:245px;
+  height:60px;
+  border:none;
+  border-radius:50px;
+  cursor:pointer;
+
+  display:flex;
+  align-items:center;
+  gap:14px;
+
+  padding:0 18px;
+
+  color:#fff;
+  font-size:18px;
+  font-weight:700;
+
+ background:linear-gradient(to bottom,#0d6eff,#0047d9);
+
+  border:2px solid rgba(255,255,255,.65);
+
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,.45),
+    inset 0 -4px 0 rgba(0,0,0,.25),
+    0 5px 14px rgba(0,0,0,.45);
+
+  transition:.2s;
+}
+
+/* ICON CIRCLE */
+.sidebar button .icon{
+  width:24px;
+  height:24px;
+  min-width:24px;
+
+  border-radius:50%;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border:2px solid rgba(255,255,255,.9);
+
+  background:rgba(255,255,255,.08);
+
+   font-size:24px;
+  font-weight:bold;
+
+  box-shadow:
+    inset 0 1px 3px rgba(255,255,255,.4),
+    0 2px 6px rgba(0,0,0,.35);
+}
+
+/* MOBILE */
+@media(max-width:768px){
+
+  .sidebar{
+    bottom:15px;
+    left:8px;
+  }
+
+  .sidebar button{
+    width:190px;
+    height:42px;
+    font-size:13px;
+  }
+
+}
+.agent-fields{display:none;margin-top:10px;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>THAR ROXX</h1>
+  <div id="clock">Loading Time...</div>
+  <div class="meta">
+    <div>RJ60 CE 5720</div>
+    <div>Manoj Kumar Meena</div>
+    <div>9950403513</div>
+  </div>
+</div>
+
+<div class="sidebar">
+
+  <button onclick="openPage('newBookingPage')">
+    <span class="icon">+</span>
+    <span>New Booking</span>
+  </button>
+
+  <button onclick="openPage('historyPage')">
+    <span class="icon">📋</span>
+    <span>Booking History</span>
+  </button>
+
+  <button onclick="openCommissionPage()">
+    <span class="icon">₹</span>
+    <span>Commission</span>
+  </button>
+
+</div>
+
+<!-- New Booking Page -->
+<div id="newBookingPage" class="page">
+  <button class="back-btn" onclick="goBack()">← Back</button>
+
+  <div class="form-card">
+    <h3>Booking Form</h3>
+
+    <label>Date</label>
+    <input id="bookingDate" type="date" required>
+
+    <label>Name</label>
+    <input id="name" type="text" required>
+
+    <label>Phone</label>
+    <input id="phone" type="tel" pattern="[0-9]{10}" required>
+
+    <label>Rent</label>
+    <input id="rent" type="number" min="0">
+
+    <label>Advance</label>
+    <input id="advance" type="number" min="0">
+
+    <label>Remaining</label>
+    <input id="remaining" type="number" readonly>
+
+    <label>Start Time</label>
+    <input id="startTime" type="time" required>
+
+    <label>Duration</label>
+    <select id="duration">
+      <option>2</option>
+      <option>4</option>
+      <option>6</option>
+      <option>12</option>
+      <option>24</option>
+    </select>
+
+    <label>License Number</label>
+    <input id="license" type="text" placeholder="लाइसेंस नंबर">
+
+    <label>Aadhaar Number</label>
+    <input id="aadhaar" type="text" placeholder="आधार नंबर">
+
+    <label>Notes</label>
+    <textarea id="notes"></textarea>
+
+    <label>Agent?</label>
+
+    <label>
+      <input type="radio" name="agentSelect" id="agentSelectYes" onclick="showAgentFields(true)">
+      Yes
+    </label>
+
+    <label>
+      <input type="radio" name="agentSelect" id="agentSelectNo" checked onclick="showAgentFields(false)">
+      No
+    </label>
+
+    <div class="agent-fields" id="agentFields">
+
+<label>Agent Name</label>
+<input id="agent" type="text" placeholder="Agent Name">
+      <label>Agent Phone</label>
+      <input id="agentPhone" type="tel" pattern="[0-9]{10}">
+
+      <label>Commission</label>
+      <input id="commission" type="number" readonly tabindex="-1">
+
+    </div>
+
+    <button class="btn-primary" onclick="addBooking()">
+      Confirm & WhatsApp
+    </button>
+
+  </div>
+</div>
+<!-- Booking History Page -->
+<div id="historyPage" class="page">
+  <button class="back-btn" onclick="goBack()">← Back</button>
+
+  <div class="form-card">
+    <h3>Booking History</h3>
+
+    <div style="margin-top:10px;">
+      <button class="btn-primary active-tab" id="pastBtn" onclick="showHistoryTab('past')">
+        Past
+      </button>
+
+      <button class="btn-primary" id="advanceBtn" onclick="showHistoryTab('advance')">
+        Advance
+      </button>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Rent</th>
+            <th>Advance</th>
+            <th>Remaining</th>
+            <th>Start</th>
+            <th>Duration</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody id="historyTable"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Monthly Commission Page -->
+<div id="commissionPage" class="page">
+  <button class="back-btn" onclick="goBack()">← Back</button>
+  <div class="form-card">
+    <h3>Monthly Agent Commission</h3>
+    <label>Select Month</label>
+    <select id="commissionMonth">
+      <option value="0">January</option>
+      <option value="1">February</option>
+      <option value="2">March</option>
+      <option value="3">April</option>
+      <option value="4">May</option>
+      <option value="5">June</option>
+      <option value="6">July</option>
+      <option value="7">August</option>
+      <option value="8">September</option>
+      <option value="9">October</option>
+      <option value="10">November</option>
+      <option value="11">December</option>
+    </select>
+    <label>Select Year</label>
+    <input type="number" id="commissionYear" value="2026" min="2025" max="2100">
+
+    <button class="btn-primary" onclick="showMonthlyCommission()">Show Commission</button>
+
+    <div class="table-container" style="margin-top:12px;">
+      <table>
+        <thead>
+          <tr>
+            <th>Agent Name</th>
+            <th>Total Commission (₹)</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="commissionTable"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+const PASSWORD="7804";
+let bookings=JSON.parse(localStorage.getItem("bookings")||"[]");
+let historyTab="past";
+
+function askPassword(){const p=prompt("Enter Password:");return p===PASSWORD;}
+function updateClock(){
+  const now=new Date();
+  const opts={timeZone:'Asia/Kolkata',hour12:false,year:'numeric',month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'};
+  document.getElementById('clock').textContent=new Intl.DateTimeFormat('en-GB',opts).format(now)+' (IST)';
+}
+setInterval(updateClock,1000);updateClock();
+
+function openPage(id){
+  document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+  document.getElementById(id).style.display = 'block';
+
+  document.querySelector('.header').style.display = 'none';
+  document.querySelector('.sidebar').style.display = 'none';
+
+  if(id === 'historyPage'){
+    renderHistory();
+  }
+
+if(id === 'commissionPage'){
+  showMonthlyCommission();
+}}
+
+function goBack(){
+  document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+
+  document.querySelector('.header').style.display = 'block';
+  document.querySelector('.sidebar').style.display = 'flex';
+}
+function showAgentFields(show){
+
+  document.getElementById('agentFields').style.display =
+    show ? 'block' : 'none';
+
+  if(show){
+
+    const rent =
+      parseFloat(document.getElementById('rent').value) || 0;
+
+    const COMMISSION_RATE = 0.15;
+
+    document.getElementById('commission').value =
+      (rent * COMMISSION_RATE).toFixed(2);
+
+  }else{
+
+    document.getElementById('commission').value = '';
+  }
+} 
+
+const bookingDate=document.getElementById('bookingDate');
+const name=document.getElementById('name');
+const phone=document.getElementById('phone');
+const remaining=document.getElementById('remaining');
+const startTimeEl=document.getElementById('startTime');
+const durationEl=document.getElementById('duration');
+const notes=document.getElementById('notes');
+const agentSelectYes=document.getElementById('agentSelectYes');
+const agentSelectNo=document.getElementById('agentSelectNo');
+const agent=document.getElementById('agent');
+const agentPhoneEl=document.getElementById('agentPhone');
+const commission=document.getElementById('commission');
+const licenseEl=document.getElementById('license');
+const aadhaarEl=document.getElementById('aadhaar');
+
+const rentEl=document.getElementById('rent');
+const advEl=document.getElementById('advance');
+
+rentEl.addEventListener('input', calculateRemaining);
+advEl.addEventListener('input', calculateRemaining);
+
+function calculateRemaining(){
+
+  const rent =
+    parseFloat(rentEl.value) || 0;
+
+  const advance =
+    parseFloat(advEl.value) || 0;
+
+  const remain =
+    Math.max(0, rent - advance);
+
+  remaining.value = remain;
+
+  if(agentSelectYes.checked){
+
+    const COMMISSION_RATE = 0.15;
+
+    commission.value =
+      (rent * COMMISSION_RATE).toFixed(2);
+
+  }
+
+}
+
+function formatAMPM(date){let hours=date.getHours();let minutes=date.getMinutes();let ampm = hours>=12?'PM':'AM';hours=hours%12; hours=hours?hours:12;minutes=minutes<10?'0'+minutes:minutes;return hours+':'+minutes+' '+ampm;}
+
+// ---------------- Add New Booking ----------------
+function addBooking(){
+  const date = bookingDate.value;
+  const nameVal = name.value.trim();
+ const phoneVal = phone.value.replace(/\D/g,'');
+
+if(phoneVal.length !== 10){
+  alert("Valid 10 digit phone number डालें");
+  return;
+}
+  const rentVal = parseFloat(rentEl.value) || 0;
+  const advanceVal = parseFloat(advEl.value) || 0;
+  const remainingVal = Math.max(0, rentVal - advanceVal);
+  const startTimeVal = startTimeEl.value;
+  const durationVal = parseInt(durationEl.value);
+  const notesVal = notes.value.trim();
+  const licenseVal = licenseEl.value.trim();
+  const aadhaarVal = aadhaarEl.value.trim();
+
+  const isAgent = agentSelectYes.checked;
+  let agentName = "", agentPhone = "", commissionVal = 0;
+
+if (isAgent) {
+  agentName = agent.value.trim();
+  agentPhone = agentPhoneEl.value.trim();
+
+  const COMMISSION_RATE = 0.15;
+ commissionVal = parseFloat((rentVal * COMMISSION_RATE).toFixed(2));
+  commission.value = commissionVal;
+}
+
+  if(!date || !nameVal || !phoneVal || !startTimeVal){
+    alert('सभी आवश्यक फ़ील्ड भरें');
+    return;
+  }
+
+  const today = new Date().toISOString().split("T")[0];
+  let isBackDate = false;
+  if(date < today){
+    if(date < "2025-01-01"){alert("Back date booking केवल 01-Jan-2025 से allowed है");return;}
+    if(!askPassword()){alert("Wrong Password");return;}
+    isBackDate = true;
+  }
+
+  const end = new Date(date+"T"+startTimeVal+":00");
+  end.setHours(end.getHours()+durationVal);
+  const returnDateStr = end.toLocaleDateString('en-GB',{day:'2-digit', month:'short', year:'numeric'});
+  const returnTimeStr = formatAMPM(end);
+  const kmLimit = durationVal==12?200:durationVal==24?350:durationVal==6?100:0;
+
+  const booking = {
+    date,name:nameVal,phone:"+91"+phoneVal,rent:rentVal,advance:advanceVal,remaining:remainingVal,
+    startTime:startTimeVal,duration:durationVal,status:'Confirmed',
+    agent:agentName,agentPhone,commission:commissionVal,notes:notesVal,
+    license:licenseVal,aadhaar:aadhaarVal,
+    returnTime:returnTimeStr,returnDate:returnDateStr,kmLimit
+  };
+
+  bookings.push(booking);
+  localStorage.setItem('bookings', JSON.stringify(bookings));
+
+if(!isBackDate){
+
+  const custMsg =
+`Hello ${nameVal},
+
+आपकी Thar Roxx booking confirm हो गई है.
+
+Date: ${date}
+Start: ${startTimeVal}
+Duration: ${durationVal} घंटे
+Rent: ₹${rentVal}
+Advance: ₹${advanceVal}
+Remaining: ₹${remainingVal}`;
+
+ // CUSTOMER MESSAGE
+window.location.href =
+`https://wa.me/91${phoneVal}?text=${encodeURIComponent(custMsg)}`;
+
+// AGENT MESSAGE
+if(isAgent && agentPhone){
+
+  setTimeout(()=>{
+
+    const cleanAgentPhone =
+    agentPhone.replace(/\D/g,'');
+
+    const agentMsg =
+`Hello ${agentName},
+
+आपकी booking confirm हो गई है।
+
+Commission: ₹${commissionVal}`;
+
+    window.location.href =
+    `https://wa.me/91${cleanAgentPhone}?text=${encodeURIComponent(agentMsg)}`;
+
+  },3000);
+
+}}  alert('Booking confirmed!');
+  document.querySelectorAll('#newBookingPage input, #newBookingPage textarea').forEach(i=>i.value='');
+  agentSelectNo.checked = true;
+  showAgentFields(false);
+  goBack();
+}
+
+function showHistoryTab(tab){
+  historyTab = tab;
+  renderHistory();
+}
+
+function renderHistory(){
+  const tbody = document.getElementById("historyTable");
+  tbody.innerHTML = "";
+
+  const today = new Date().toISOString().split("T")[0];
+
+  bookings
+    .map((b, i) => ({ b, originalIndex: i }))   // ✅ SAFE mapping
+    .sort((a, b) => new Date(a.b.date) - new Date(b.b.date))
+    .forEach(({ b, originalIndex }) => {
+
+      if (
+        (historyTab === "past" && b.date <= today) ||
+        (historyTab === "advance" && b.date > today)
+      ) {
+
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+          <td>${b.date}</td>
+          <td>${b.name}</td>
+          <td>${b.phone}</td>
+          <td>₹${b.rent}</td>
+          <td>₹${b.advance}</td>
+          <td>₹${b.remaining}</td>
+          <td>${b.startTime}</td>
+          <td>${b.duration}h</td>
+          <td>${b.status}</td>
+          <td>
+            <button class="btn-primary" onclick="resendWhatsApp(${originalIndex})">Resend</button>
+            <button class="btn-primary" onclick="editBooking(${originalIndex})">Edit</button>
+            <button class="btn-danger" onclick="cancelBooking(${originalIndex})">Cancel</button>
+            <button class="btn-danger" onclick="deleteBooking(${originalIndex})">Delete</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      }
+    });
+}
+function resendWhatsApp(i){
+  const b = bookings[i];
+  if(!b) return;
+
+  // ✅ SAFE PHONE CLEANING
+  let phone = (b.phone || "").toString();
+  phone = phone.replace(/\D/g, "");   // सिर्फ digits
+
+  if(phone.length > 10){
+    phone = phone.slice(-10);        // last 10 digits safe
+  }
+
+  const custMsg = `Hello ${b.name},
+
+आपकी Thar Roxx की बुकिंग confirm हो गई है।
+
+• Date: ${b.date}
+• Start Time: ${b.startTime}
+• Duration: ${b.duration} घंटे
+• Return By: ${b.returnDate} ${b.returnTime}`;
+
+  window.open(
+    `https://wa.me/91${phone}?text=${encodeURIComponent(custMsg)}`,
+    "_blank"
+  );
+}
+// ---------------- Edit Booking ----------------
+function editBooking(i){
+  if(!askPassword()) return alert("Wrong Password");
+
+  const b = bookings[i];
+  if(!b) return;
+
+  openPage('newBookingPage');
+
+  bookingDate.value = b.date;
+  name.value = b.name;
+  phone.value = b.phone.replace("+91","");
+  rentEl.value = b.rent;
+  advEl.value = b.advance;
+  remaining.value = b.remaining;
+  startTimeEl.value = b.startTime;
+  durationEl.value = b.duration;
+  notes.value = b.notes;
+  licenseEl.value = b.license;
+  aadhaarEl.value = b.aadhaar;
+
+  if (b.agent) {
+    agentSelectYes.checked = true;
+    showAgentFields(true);
+
+    agent.value = b.agent;
+    agentPhoneEl.value = b.agentPhone;
+
+    const COMMISSION_RATE = 0.15;
+    const rentVal = parseFloat(b.rent) || 0;
+
+    commission.value = (rentVal * COMMISSION_RATE).toFixed(2);
+  } else {
+    agentSelectNo.checked = true;
+    showAgentFields(false);
+    commission.value = '';
+  }
+
+  const end = new Date(bookingDate.value + "T" + startTimeEl.value + ":00");
+  end.setHours(end.getHours() + parseInt(durationEl.value || 0));
+
+  const returnDateStr = end.toLocaleDateString('en-GB',{
+    day:'2-digit', month:'short', year:'numeric'
+  });
+  const returnTimeStr = formatAMPM(end);
+
+  bookings[i] = {
+  ...b,
+  date: bookingDate.value,
+  name: name.value.trim(),
+  phone: "+91" + phone.value.trim(),
+  rent: parseFloat(rentEl.value) || 0,
+  advance: parseFloat(advEl.value) || 0,
+  remaining: parseFloat(remaining.value) || 0,
+  startTime: startTimeEl.value,
+  duration: parseInt(durationEl.value) || 0,
+  notes: notes.value.trim(),
+  license: licenseEl.value.trim(),
+  aadhaar: aadhaarEl.value.trim(),
+  agent: agentSelectYes.checked ? agent.value.trim() : "",
+  agentPhone: agentSelectYes.checked ? agentPhoneEl.value.trim() : "",
+  commission: agentSelectYes.checked ? parseFloat(commission.value) || 0 : 0,
+  returnDate: returnDateStr,
+  returnTime: returnTimeStr
+};
+
+localStorage.setItem("bookings", JSON.stringify(bookings));
+
+alert('Booking updated!');
+
+document.querySelectorAll('#newBookingPage input, #newBookingPage textarea')
+  .forEach(i => i.value = '');
+
+agentSelectNo.checked = true;
+showAgentFields(false);
+
+goBack();
+
+}
+// ---------------- Cancel & Delete ----------------
+function cancelBooking(i){
+  if(!bookings[i]) return;
+
+  if(confirm('Cancel this booking?')){
+    bookings[i].status = 'Cancelled';
+    localStorage.setItem('bookings', JSON.stringify(bookings));
+    renderHistory();
+  }
+}
+
+function deleteBooking(i){
+  if(!bookings[i]) return;
+
+  if(confirm('Delete this booking?')){
+    bookings.splice(i, 1);
+    localStorage.setItem('bookings', JSON.stringify(bookings));
+    renderHistory();
+  }
+}
+// ---------------- Monthly Commission Feature ----------------
+
+function openCommissionPage(){
+  openPage('commissionPage');
+}
+
+// ---------------- SHOW AGENTS ----------------
+function showMonthlyCommission(){
+
+  const month = parseInt(document.getElementById('commissionMonth').value);
+  const year = parseInt(document.getElementById('commissionYear').value);
+
+  const tbody = document.getElementById('commissionTable');
+
+  tbody.innerHTML = '';
+
+  const uniqueAgents = [];
+
+  bookings.forEach(b => {
+
+    if(!b.agent) return;
+
+    const d = new Date(b.date);
+
+    if(
+      d.getMonth() === month &&
+      d.getFullYear() === year
+    ){
+
+      if(!uniqueAgents.includes(b.agent)){
+        uniqueAgents.push(b.agent);
+      }
+
+    }
+
+  });
+
+  if(uniqueAgents.length === 0){
+
+    tbody.innerHTML = `
+    <tr>
+      <td colspan="3">
+        No Agents Found
+      </td>
+    </tr>
+    `;
+
+    return;
+  }
+
+  uniqueAgents.forEach(agentName => {
+
+    let total = 0;
+
+    bookings.forEach(b => {
+
+      const d = new Date(b.date);
+
+      if(
+        b.agent === agentName &&
+        d.getMonth() === month &&
+        d.getFullYear() === year
+      ){
+
+        total += parseFloat(b.commission || 0);
+
+      }
+
+    });
+
+    const tr = document.createElement('tr');
+
+    tr.innerHTML = `
+    <td>${agentName}</td>
+
+    <td>₹${total.toFixed(2)}</td>
+
+    <td>
+      <button class="btn-primary"
+      onclick='showAgentBookings(${JSON.stringify(agentName)})'
+      Open
+      </button>
+    </td>
+    `;
+
+    tbody.appendChild(tr);
+
+  });
+
+}
+
+// ---------------- SHOW AGENT BOOKINGS ----------------
+function showAgentBookings(agentName){
+
+  const month = parseInt(document.getElementById('commissionMonth').value);
+  const year = parseInt(document.getElementById('commissionYear').value);
+
+  // पुराना page remove
+  const oldPage = document.getElementById('agentBookingPage');
+  if(oldPage){
+    oldPage.remove();
+  }
+
+  // नया page create
+  const page = document.createElement('div');
+  page.className = 'page';
+  page.id = 'agentBookingPage';
+
+  let rows = '';
+  let totalCommission = 0;
+  let totalBookings = 0;
+
+  bookings.forEach((b,index)=>{
+
+    const d = new Date(b.date);
+
+    if(
+      b.agent === agentName &&
+      d.getMonth() === month &&
+      d.getFullYear() === year
+    ){
+
+      totalBookings++;
+
+      totalCommission += parseFloat(b.commission || 0);
+
+      if(!b.paymentStatus){
+        b.paymentStatus = "Unpaid";
+      }
+
+      rows += `
+      <tr>
+
+        <td>${b.date}</td>
+
+        <td>${b.name}</td>
+
+        <td>${b.phone}</td>
+
+        <td>₹${b.rent}</td>
+
+        <td>₹${b.commission}</td>
+
+        <td>
+        ${
+          b.paymentStatus === "Paid"
+          ?
+          '<span style="color:green;font-weight:bold;">Paid</span>'
+          :
+          '<span style="color:red;font-weight:bold;">Unpaid</span>'
+        }
+        </td>
+
+        <td>
+
+        ${
+          b.paymentStatus === "Paid"
+          ?
+          'Done'
+          :
+          `<button class="btn-primary"
+          onclick="sendCommissionOTP(${index})">
+          Pay
+          </button>`
+        }
+
+        </td>
+
+      </tr>
+      `;
+    }
+
+  });
+
+  if(rows === ''){
+    rows = `
+    <tr>
+      <td colspan="7">No Bookings Found</td>
+    </tr>
+    `;
+  }
+
+  page.innerHTML = `
+
+  <button class="back-btn" onclick="
+    document.getElementById('agentBookingPage').remove();
+    document.getElementById('commissionPage').style.display='block';
+  ">
+  ← Back
+  </button>
+
+  <div class="form-card">
+
+    <h2>${agentName}</h2>
+
+    <p>
+      Total Bookings: <b>${totalBookings}</b>
+    </p>
+
+    <p>
+      Total Commission: <b>₹${totalCommission.toFixed(2)}</b>
+    </p>
+
+    <div class="table-container">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Date</th>
+            <th>Customer</th>
+            <th>Phone</th>
+            <th>Rent</th>
+            <th>Commission</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          ${rows}
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+  `;
+
+  document.body.appendChild(page);
+
+  document.getElementById('commissionPage').style.display='none';
+
+  page.style.display='block';
+
+  localStorage.setItem(
+    'bookings',
+    JSON.stringify(bookings)
+  );
+
+}
+// ---------------- SEND OTP ----------------
+function sendCommissionOTP(index){
+
+  const b = bookings[index];
+
+  if(!b.agentPhone){
+
+    alert("Agent phone missing");
+
+    return;
+
+  }
+
+  const otp = Math.floor(
+    1000 + Math.random() * 9000
+  ).toString();
+
+  b.paymentOTP = otp;
+
+  localStorage.setItem(
+    'bookings',
+    JSON.stringify(bookings)
+  );
+
+  const msg =
+`Hello ${b.agent}
+
+Commission Payment OTP:
+
+${otp}
+
+Do not share this OTP.`;
+
+  window.open(
+    `https://wa.me/91${b.agentPhone}?text=${encodeURIComponent(msg)}`,
+    '_blank'
+  );
+
+  verifyCommissionOTP(index);
+
+}
+
+function verifyCommissionOTP(index){
+
+  const otpBox = document.createElement("div");
+
+  otpBox.innerHTML = `
+    <div style="
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.8);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:99999;
+    ">
+
+      <div style="
+        background:#fff;
+        padding:20px;
+        border-radius:12px;
+        width:300px;
+        text-align:center;
+      ">
+
+        <h3>Enter OTP</h3>
+
+        <input
+          type="text"
+          id="liveOtpInput"
+          maxlength="4"
+          placeholder="OTP"
+          style="
+            width:90%;
+            padding:10px;
+            margin-top:10px;
+            border:1px solid #ccc;
+            border-radius:8px;
+          "
+        >
+
+        <button
+          id="verifyOtpBtn"
+          style="
+            margin-top:15px;
+            padding:10px 16px;
+            border:none;
+            border-radius:8px;
+            background:#1466f2;
+            color:#fff;
+            cursor:pointer;
+          "
+        >
+          Verify
+        </button>
+
+      </div>
+
+    </div>
+  `;
+
+  document.body.appendChild(otpBox);
+
+  document
+    .getElementById("verifyOtpBtn")
+    .onclick = function(){
+
+      const entered =
+        document
+        .getElementById("liveOtpInput")
+        .value
+        .trim();
+
+      if(entered === bookings[index].paymentOTP){
+
+        bookings[index].paymentStatus = "Paid";
+
+        bookings[index].paymentOTP = null;
+
+        localStorage.setItem(
+          'bookings',
+          JSON.stringify(bookings)
+        );
+
+        alert("Payment Verified");
+
+        otpBox.remove();
+
+        showMonthlyCommission();
+
+      }else{
+
+        alert("Wrong OTP");
+
+      }
+
+    };
+
+}
+// ---------------- WhatsApp ----------------
+function sendAgentWhatsApp(agentName, total){
+  let agentPhone = '';
+
+  for(let i = bookings.length - 1; i >= 0; i--){
+    const b = bookings[i];
+    if(b.agent === agentName && b.agentPhone){
+      agentPhone = b.agentPhone;
+      break;
+    }
+  }
+
+  if(!agentPhone){
+    alert('Agent phone not found');
+    return;
+  }
+
+  const msg =
+`Hello ${agentName},
+Your total commission for selected month is ₹${total}`;
+
+  window.open(
+    `https://wa.me/91${agentPhone}?text=${encodeURIComponent(msg)}`,
+    '_blank'
+  );
+}</script>
+
+</body>
+</html>
